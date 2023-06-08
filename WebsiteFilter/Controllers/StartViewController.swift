@@ -21,12 +21,20 @@ class StartViewController: UIViewController {
 
     var url = ""
     
+//MARK: - Life cycle:
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print("сработал viewDidLoad")
         configView()
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        print("сработал viewWillLayoutSubviews")
+    }
+    
+//MARK: - @objc func:
     @objc func getValideLinkTextField() {
         guard ValidateManager().isValideLinkMask(text: url) else {return}
         if url.hasPrefix("www.") {
@@ -75,10 +83,12 @@ class StartViewController: UIViewController {
     }
     
     private func alertIsNotAllowedURL() {
-       let alert = UIAlertController(title: "Attention\nYou input Not Allowed URL.", message: "Please change your URL", preferredStyle: .alert)
-       let actionOk = UIAlertAction(title: "OK", style: .cancel)
-       alert.addAction(actionOk)
-       present(alert, animated: true)
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: "Attention\nYou input Not Allowed URL.", message: "Please change your URL", preferredStyle: .alert)
+            let actionOk = UIAlertAction(title: "OK", style: .cancel)
+            alert.addAction(actionOk)
+            self.present(alert, animated: true)
+        }
    }
 
 }
@@ -150,14 +160,22 @@ extension StartViewController {
         configFilterButtoh()
         configRefreshButtoh()
         targetActions()
+        setWebView()
+        setConstraints()
+    }
+    
+    private func setWebView() {
+        webView.navigationDelegate = self
+        webView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func setUpView() {
         view.backgroundColor = .white
         title = "Website Filter"
         view.addSubview(webView)
-        webView.navigationDelegate = self
     }
+    
+    
     private func configInputTextField() {
         inputTextField.delegate = self
         inputTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -209,18 +227,26 @@ extension StartViewController {
         filterButton.buttonSettings(borderWidth: 1, cornerRadius: 15, borderColor: .systemBlue)
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-            webView.frame = CGRect(x: 20, y: 150 , width: view.frame.width - 40, height: view.frame.height - 250)
-        print("сработал webView.frame")
-            stackView.frame = CGRect(x: 20, y: view.frame.height - 100, width: view.frame.width - 40, height: 50)
-        print("сработал stackView.frame")
+    private func setConstraints() {
+
         
         NSLayoutConstraint.activate([
-            inputTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            inputTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            inputTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            inputTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            inputTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            inputTextField.topAnchor.constraint(equalTo: navigationItem.titleView?.bottomAnchor ?? view.safeAreaLayoutGuide.topAnchor),
+            
+            webView.topAnchor.constraint(equalTo: inputTextField.bottomAnchor),
+            webView.leadingAnchor.constraint(equalTo: inputTextField.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: inputTextField.trailingAnchor),
+            webView.bottomAnchor.constraint(equalTo: stackView.topAnchor, constant: 10),
+            
+            stackView.leadingAnchor.constraint(equalTo: inputTextField.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: inputTextField.trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            stackView.heightAnchor.constraint(equalToConstant: 40)
         ])
-        print("сработал viewWillLayoutSubviews")
+        print("сработал setConstraints")
     }
+    
+    
 }
