@@ -18,6 +18,8 @@ class StartViewController: UIViewController {
     
     private let webView = WKWebView()
     private var stackView = UIStackView()
+    
+    var filterWordsArray: [String] = []
 
     var url = ""
     
@@ -25,18 +27,26 @@ class StartViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if !(view is WKWebView) {
+                    let webView = WKWebView()
+                    webView.navigationDelegate = self
+                    view = webView
+                }
         print("сработал viewDidLoad")
         configView()
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        print("сработал viewWillLayoutSubviews")
-    }
+//    override func viewWillLayoutSubviews() {
+//        super.viewWillLayoutSubviews()
+//        print("сработал viewWillLayoutSubviews")
+//    }
     
 //MARK: - @objc func:
+    
     @objc func getValideLinkTextField() {
-        guard ValidateManager().isValideLinkMask(text: url) else {return}
+        guard ValidateManager().isValideLinkMask(text: url) else {
+            openURL(urlAdress: "https://www.google.com/search?q=\(url)")
+            return}
         if url.hasPrefix("www.") {
             url.insert(contentsOf: "https://", at: url.startIndex)
         }
@@ -45,7 +55,9 @@ class StartViewController: UIViewController {
     
     @objc func openURL(urlAdress: String) {
             guard let url = URL(string: urlAdress) else {return}
-            webView.load(URLRequest(url: url))
+        DispatchQueue.main.async {
+            self.webView.load(URLRequest(url: url))
+        }
     }
     
     @objc func backURL() {
@@ -58,9 +70,9 @@ class StartViewController: UIViewController {
         webView.goForward()
     }
     
-    @objc func filterURL(urlAdress: String) {
-            guard let url = URL(string: urlAdress) else {return}
-            webView.load(URLRequest(url: url))
+    @objc func openFilterList() {
+        
+        navigationController?.pushViewController(FilterViewController(), animated: true)
     }
     
     @objc func refreshURL() {
@@ -71,7 +83,7 @@ class StartViewController: UIViewController {
         inputTextField.addTarget(self, action: #selector(openURL), for: .touchUpInside)
         backButtoh.addTarget(self, action: #selector(backURL), for: .touchUpInside)
         forwardButton.addTarget(self, action: #selector(forwardURL), for: .touchUpInside)
-        filterButton.addTarget(self, action: #selector(filterURL), for: .touchUpInside)
+        filterButton.addTarget(self, action: #selector(openFilterList), for: .touchUpInside)
         refreshButtoh.addTarget(self, action: #selector(refreshURL), for: .touchUpInside)
         
     }
@@ -90,7 +102,6 @@ class StartViewController: UIViewController {
             self.present(alert, animated: true)
         }
    }
-
 }
 
 //MARK: - TextFieldDelegate:
@@ -102,13 +113,15 @@ extension StartViewController: UITextFieldDelegate {
         guard let stringRange = Range(range, in: currentText) else { return false }
         let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
         
-        registerOpenURL(textField: textField, updatedText: updatedText)
-        
+//        registerOpenURL(textField: textField, updatedText: updatedText)
+        url = updatedText
         return true
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         view.endEditing(true)
+        getValideLinkTextField()
+        print(url)
         return true
     }
 }
@@ -117,31 +130,30 @@ extension StartViewController: UITextFieldDelegate {
 
 extension StartViewController: WKNavigationDelegate {
     
-    
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         print("did decidePolicyFor")
+        
        
         let url = navigationAction.request.url?.absoluteString
-        if url!.contains("apple") {
-            alertIsNotAllowedURL()
-// дописать рефреш
-            decisionHandler(.cancel)
-            print("did decidePolicyFor decisionHandler(.cancel)")
-            
-        } else {
-            decisionHandler(.allow)
-        }
-
+            if url!.contains("apple") {
+                self.alertIsNotAllowedURL()
+                // дописать рефреш
+                decisionHandler(.cancel)
+                print("did decidePolicyFor decisionHandler(.cancel)")
+            } else {
+                decisionHandler(.allow)
+                print("did decidePolicyFor decisionHandler(.allow)")
+            }
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         print("did Finish")
         
-//        backButtoh.isEnabled = webView.canGoBack
-//        forwardButton.isEnabled = webView.canGoForward
+        backButtoh.isEnabled = webView.canGoBack
+        print(backButtoh.isEnabled)
+        forwardButton.isEnabled = webView.canGoForward
+        print(forwardButton.isEnabled)
     }
-    
-    
     
 }
 
@@ -167,12 +179,12 @@ extension StartViewController {
     private func setWebView() {
         webView.navigationDelegate = self
         webView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(webView)
     }
     
     private func setUpView() {
         view.backgroundColor = .white
         title = "Website Filter"
-        view.addSubview(webView)
     }
     
     
@@ -181,7 +193,7 @@ extension StartViewController {
         inputTextField.translatesAutoresizingMaskIntoConstraints = false
         inputTextField.placeholder = " www.example.com"
         inputTextField.clearButtonMode = .always
-        inputTextField.font = .systemFont(ofSize: 25)
+        inputTextField.font = .systemFont(ofSize: 20)
         inputTextField.layer.borderWidth = 1
         inputTextField.layer.borderColor = UIColor.lightGray.cgColor
         inputTextField.layer.cornerRadius = 8
@@ -190,8 +202,8 @@ extension StartViewController {
     }
     
     private func comfigStackView() {
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView = UIStackView(arrangedSubviews: [backButtoh, forwardButton, refreshButtoh, filterButton])
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.spacing = 20
@@ -203,7 +215,6 @@ extension StartViewController {
         backButtoh.setTitleColor(UIColor.systemBlue, for: .normal)
         backButtoh.titleLabel?.font = .boldSystemFont(ofSize: 18)
         backButtoh.buttonSettings(borderWidth: 1, cornerRadius: 15, borderColor: .systemBlue)
-        backButtoh.setContentHuggingPriority(UILayoutPriority(200), for: .horizontal)
     }
     
     private func configForwardButtoh() {
@@ -228,22 +239,21 @@ extension StartViewController {
     }
     
     private func setConstraints() {
-
-        
         NSLayoutConstraint.activate([
             inputTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             inputTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             inputTextField.topAnchor.constraint(equalTo: navigationItem.titleView?.bottomAnchor ?? view.safeAreaLayoutGuide.topAnchor),
+            inputTextField.heightAnchor.constraint(equalToConstant: 35),
             
             webView.topAnchor.constraint(equalTo: inputTextField.bottomAnchor),
             webView.leadingAnchor.constraint(equalTo: inputTextField.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: inputTextField.trailingAnchor),
-            webView.bottomAnchor.constraint(equalTo: stackView.topAnchor, constant: 10),
+            webView.bottomAnchor.constraint(equalTo: stackView.topAnchor, constant: -10),
             
             stackView.leadingAnchor.constraint(equalTo: inputTextField.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: inputTextField.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            stackView.heightAnchor.constraint(equalToConstant: 40)
+            stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            stackView.heightAnchor.constraint(equalToConstant: 36)
         ])
         print("сработал setConstraints")
     }
