@@ -19,29 +19,25 @@ class StartViewController: UIViewController {
     private let webView = WKWebView()
     private var stackView = UIStackView()
     
-    var filterWordsArray: [String] = []
-
+    
+    var exceptionArray: [String] = ["xxx"]
+    
     var url = ""
     
-//MARK: - Life cycle:
+    //MARK: - Life cycle:
     
     override func viewDidLoad() {
         super.viewDidLoad()
         if !(view is WKWebView) {
-                    let webView = WKWebView()
-                    webView.navigationDelegate = self
-                    view = webView
-                }
+            let webView = WKWebView()
+            webView.navigationDelegate = self
+            view = webView
+        }
         print("сработал viewDidLoad")
         configView()
     }
     
-//    override func viewWillLayoutSubviews() {
-//        super.viewWillLayoutSubviews()
-//        print("сработал viewWillLayoutSubviews")
-//    }
-    
-//MARK: - @objc func:
+    //MARK: - @objc func:
     
     @objc func getValideLinkTextField() {
         guard ValidateManager().isValideLinkMask(text: url) else {
@@ -54,7 +50,7 @@ class StartViewController: UIViewController {
     }
     
     @objc func openURL(urlAdress: String) {
-            guard let url = URL(string: urlAdress) else {return}
+        guard let url = URL(string: urlAdress) else {return}
         DispatchQueue.main.async {
             self.webView.load(URLRequest(url: url))
         }
@@ -70,10 +66,22 @@ class StartViewController: UIViewController {
         webView.goForward()
     }
     
-    @objc func openFilterList() {
+    func updateFilterWords() {
         
-        navigationController?.pushViewController(FilterViewController(), animated: true)
     }
+    
+    @objc func openFilterList() {
+        let filterVC = FilterViewController()
+        filterVC.filterWords = exceptionArray
+        filterVC.completion = { [unowned self] wordsException in
+            self.exceptionArray = wordsException
+        }
+        let navController = UINavigationController(rootViewController: filterVC)
+        navigationController?.present(navController, animated: true)
+        
+      
+    }
+
     
     @objc func refreshURL() {
         webView.reload()
@@ -133,17 +141,17 @@ extension StartViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         print("did decidePolicyFor")
         
-       
         let url = navigationAction.request.url?.absoluteString
-            if url!.contains("apple") {
+        if exceptionArray.contains(where: {url!.contains($0)}) {
                 self.alertIsNotAllowedURL()
-                // дописать рефреш
+                openURL(urlAdress: "https://www.google.com")
                 decisionHandler(.cancel)
                 print("did decidePolicyFor decisionHandler(.cancel)")
             } else {
                 decisionHandler(.allow)
                 print("did decidePolicyFor decisionHandler(.allow)")
             }
+        
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

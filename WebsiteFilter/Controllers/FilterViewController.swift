@@ -17,7 +17,7 @@ class FilterViewController: UIViewController {
         }
     }
     
-    var completion: ((String?)->Void)?
+    var completion: (([String])->Void)?
     
     
 //MARK: - Life cycle:
@@ -30,7 +30,11 @@ class FilterViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        
+        super.viewWillDisappear(animated)
+        completion?(filterWords)
+
+        print("записано в массив filterWords", filterWords.count)
+
     }
     
 //MARK: - @objc func:
@@ -66,7 +70,7 @@ class FilterViewController: UIViewController {
     
     private func setBarButtonAddWords() {
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWordAlert))
-        navigationController?.navigationItem.rightBarButtonItem = addButton
+        navigationItem.rightBarButtonItem = addButton
     }
     
 }
