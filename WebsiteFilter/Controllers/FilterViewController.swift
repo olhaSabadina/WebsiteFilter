@@ -9,15 +9,14 @@ import UIKit
 
 class FilterViewController: UIViewController {
     
-    private let filterTable = UITableView()
-    
+    var completion: (([String])->Void)?
     var filterWords: [String] = [] {
         didSet {
             filterTable.reloadData()
         }
     }
-    
-    var completion: (([String])->Void)?
+    private let filterTable = UITableView()
+    private let validateManager = ValidateManager()
     
 //MARK: - Life cycle:
     
@@ -35,15 +34,21 @@ class FilterViewController: UIViewController {
     }
     
 //MARK: - @objc func:
-    @objc func addWordToFilterAlert() {
+    @objc private func addWordToFilterAlert() {
         let alert = UIAlertController(title: "Exception", message: "Add a word to prevent opening links", preferredStyle: .alert)
+       
         let actionOK = UIAlertAction(title: "OK", style: .default){ _ in
             guard let word = alert.textFields?.first?.text,
                   !word.isEmpty,
-                  ValidateFilter().isContainAtLeastTwoCharactersNoSpaces(text: word) else {return self.filterRulsAlert()}
+                  self.validateManager.isContainsTwoCharactersNoSpaces(word)
+            else {
+                self.filterRuleAlert()
+                return
+            }
             self.filterWords.append(word)
         }
-        let actionCancel = UIAlertAction(title: "Cansel", style: .cancel)
+        
+        let actionCancel = UIAlertAction(title: "Cancel", style: .destructive)
         alert.addTextField { textField in
             textField.placeholder = "input exception world"
             textField.font = .systemFont(ofSize: 17)
@@ -53,7 +58,7 @@ class FilterViewController: UIViewController {
         present(alert, animated: true)
     }
     
-    @objc func backToStartViewController() {
+    @objc private func backToStartViewController() {
         dismiss(animated: true)
     }
     
@@ -85,7 +90,7 @@ class FilterViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
     }
     
-    private func filterRulsAlert() {
+    private func filterRuleAlert() {
         let alert = UIAlertController(title: "Not valide filter word", message: "You word mast have at least 2 characters and no spaces.", preferredStyle: .alert)
         let actionOK = UIAlertAction(title: "OK", style: .default) { _ in
             self.addWordToFilterAlert()
