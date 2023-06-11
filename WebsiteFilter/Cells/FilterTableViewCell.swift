@@ -10,7 +10,7 @@ import UIKit
 class FilterTableViewCell: UITableViewCell {
     
     static let cellId = "cellId"
-
+    
     let filterLabel : UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17)
@@ -30,8 +30,4 @@ class FilterTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubview(filterLabel)
     }
-    
-    
-    
-
 }

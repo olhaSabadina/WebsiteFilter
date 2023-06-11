@@ -19,7 +19,6 @@ class StartViewController: UIViewController {
     private let webView = WKWebView()
     private var stackView = UIStackView()
     
-    
     var exceptionArray: [String] = ["xxx"]
     
     var url = ""
@@ -33,14 +32,13 @@ class StartViewController: UIViewController {
             webView.navigationDelegate = self
             view = webView
         }
-        print("сработал viewDidLoad")
         configView()
     }
     
-    //MARK: - @objc func:
+//MARK: - @objc func:
     
     @objc func getValideLinkTextField() {
-        guard ValidateManager().isValideLinkMask(text: url) else {
+        guard ValidateURL().isValideLinkMask(text: url) else {
             openURL(urlAdress: "https://www.google.com/search?q=\(url)")
             return}
         if url.hasPrefix("www.") {
@@ -72,16 +70,16 @@ class StartViewController: UIViewController {
     
     @objc func openFilterList() {
         let filterVC = FilterViewController()
+        let navController = UINavigationController(rootViewController: filterVC)
         filterVC.filterWords = exceptionArray
         filterVC.completion = { [unowned self] wordsException in
             self.exceptionArray = wordsException
         }
-        let navController = UINavigationController(rootViewController: filterVC)
+        if let presentationController = navController.presentationController as? UISheetPresentationController {
+            presentationController.detents = [.medium(), .large()]
+        }
         navigationController?.present(navController, animated: true)
-        
-      
     }
-
     
     @objc func refreshURL() {
         webView.reload()
@@ -109,7 +107,7 @@ class StartViewController: UIViewController {
             alert.addAction(actionOk)
             self.present(alert, animated: true)
         }
-   }
+    }
 }
 
 //MARK: - TextFieldDelegate:
@@ -120,8 +118,6 @@ extension StartViewController: UITextFieldDelegate {
         let currentText = inputTextField.text ?? ""
         guard let stringRange = Range(range, in: currentText) else { return false }
         let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
-        
-//        registerOpenURL(textField: textField, updatedText: updatedText)
         url = updatedText
         return true
     }
@@ -129,7 +125,6 @@ extension StartViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         view.endEditing(true)
         getValideLinkTextField()
-        print(url)
         return true
     }
 }
@@ -139,33 +134,22 @@ extension StartViewController: UITextFieldDelegate {
 extension StartViewController: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        print("did decidePolicyFor")
         
         let url = navigationAction.request.url?.absoluteString
         if exceptionArray.contains(where: {url!.contains($0)}) {
-                self.alertIsNotAllowedURL()
-                openURL(urlAdress: "https://www.google.com")
-                decisionHandler(.cancel)
-                print("did decidePolicyFor decisionHandler(.cancel)")
-            } else {
-                decisionHandler(.allow)
-                print("did decidePolicyFor decisionHandler(.allow)")
-            }
-        
+            self.alertIsNotAllowedURL()
+            openURL(urlAdress: "https://www.google.com")
+            decisionHandler(.cancel)
+        } else {
+            decisionHandler(.allow)
+        }
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        print("did Finish")
-        
         backButtoh.isEnabled = webView.canGoBack
-        print(backButtoh.isEnabled)
         forwardButton.isEnabled = webView.canGoForward
-        print(forwardButton.isEnabled)
     }
-    
 }
-
-// www.google.com
 
 //MARK: - Set UIConfiguration & constraints:
 
@@ -195,18 +179,38 @@ extension StartViewController {
         title = "Website Filter"
     }
     
-    
     private func configInputTextField() {
         inputTextField.delegate = self
         inputTextField.translatesAutoresizingMaskIntoConstraints = false
-        inputTextField.placeholder = " www.example.com"
+        inputTextField.placeholder = " search "
         inputTextField.clearButtonMode = .always
         inputTextField.font = .systemFont(ofSize: 20)
         inputTextField.layer.borderWidth = 1
         inputTextField.layer.borderColor = UIColor.lightGray.cgColor
         inputTextField.layer.cornerRadius = 8
         inputTextField.autocapitalizationType = .none
+        leftImageIntoTextField()
+        rightImageIntoTextField()
         view.addSubview(inputTextField)
+    }
+    
+    private func leftImageIntoTextField() {
+        let imageView = UIImageView(frame: CGRect(x: 8, y: 12, width: 20, height: 20))
+        let image = UIImage(named: "icon-google")
+        imageView.image = image
+        imageView.contentMode = .scaleAspectFit
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 38, height: 40))
+        view.addSubview(imageView)
+        inputTextField.leftViewMode = UITextField.ViewMode.always
+        inputTextField.leftView = imageView
+    }
+    
+    private func rightImageIntoTextField() {
+        inputTextField.rightViewMode = UITextField.ViewMode.always
+        let imageView = UIImageView()
+        let image = UIImage(systemName: "magnifyingglass")
+        imageView.image = image
+        inputTextField.rightView = imageView
     }
     
     private func comfigStackView() {
@@ -263,8 +267,5 @@ extension StartViewController {
             stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             stackView.heightAnchor.constraint(equalToConstant: 36)
         ])
-        print("сработал setConstraints")
     }
-    
-    
 }

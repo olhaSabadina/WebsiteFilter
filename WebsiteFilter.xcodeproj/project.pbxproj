@@ -19,6 +19,7 @@
 		582D8F122A2DEF7F00AAB795 /* WebsiteFilterUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 582D8F112A2DEF7F00AAB795 /* WebsiteFilterUITestsLaunchTests.swift */; };
 		58724B942A3092AE000560E1 /* UIButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58724B932A3092AE000560E1 /* UIButton+Extension.swift */; };
 		58724B9B2A30AD19000560E1 /* ValidateURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58724B9A2A30AD19000560E1 /* ValidateURL.swift */; };
+		588BC6D52A35DBA7009E5C29 /* ValidateFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 588BC6D42A35DBA7009E5C29 /* ValidateFilter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		582D8F112A2DEF7F00AAB795 /* WebsiteFilterUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteFilterUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		58724B932A3092AE000560E1 /* UIButton+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extension.swift"; sourceTree = "<group>"; };
 		58724B9A2A30AD19000560E1 /* ValidateURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidateURL.swift; sourceTree = "<group>"; };
+		588BC6D42A35DBA7009E5C29 /* ValidateFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidateFilter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				58724B9A2A30AD19000560E1 /* ValidateURL.swift */,
+				588BC6D42A35DBA7009E5C29 /* ValidateFilter.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -316,6 +319,7 @@
 			files = (
 				582A94182A326CBC00B47A7F /* FilterViewController.swift in Sources */,
 				582D8EF32A2DEF7D00AAB795 /* StartViewController.swift in Sources */,
+				588BC6D52A35DBA7009E5C29 /* ValidateFilter.swift in Sources */,
 				582D8EEF2A2DEF7D00AAB795 /* AppDelegate.swift in Sources */,
 				58724B9B2A30AD19000560E1 /* ValidateURL.swift in Sources */,
 				582A941E2A331F0F00B47A7F /* FilterTableViewCell.swift in Sources */,

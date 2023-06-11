@@ -19,7 +19,6 @@ class FilterViewController: UIViewController {
     
     var completion: (([String])->Void)?
     
-    
 //MARK: - Life cycle:
     
     override func viewDidLoad() {
@@ -27,21 +26,21 @@ class FilterViewController: UIViewController {
         setUpView()
         setFilterTable()
         setBarButtonAddWords()
+        setupLeftBarButton()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         completion?(filterWords)
-
-        print("записано в массив filterWords", filterWords.count)
-
     }
     
 //MARK: - @objc func:
-    @objc func addWordAlert() {
+    @objc func addWordToFilterAlert() {
         let alert = UIAlertController(title: "Exception", message: "Add a word to prevent opening links", preferredStyle: .alert)
         let actionOK = UIAlertAction(title: "OK", style: .default){ _ in
-            guard let word = alert.textFields?.first?.text, !word.isEmpty else {return}
+            guard let word = alert.textFields?.first?.text,
+                  !word.isEmpty,
+                  ValidateFilter().isContainAtLeastTwoCharactersNoSpaces(text: word) else {return self.filterRulsAlert()}
             self.filterWords.append(word)
         }
         let actionCancel = UIAlertAction(title: "Cansel", style: .cancel)
@@ -52,6 +51,10 @@ class FilterViewController: UIViewController {
         alert.addAction(actionOK)
         alert.addAction(actionCancel)
         present(alert, animated: true)
+    }
+    
+    @objc func backToStartViewController() {
+        dismiss(animated: true)
     }
     
 //MARK: - Private func:
@@ -69,10 +72,27 @@ class FilterViewController: UIViewController {
     }
     
     private func setBarButtonAddWords() {
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWordAlert))
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWordToFilterAlert))
         navigationItem.rightBarButtonItem = addButton
     }
     
+    private func setupLeftBarButton() {
+        let backButton = UIButton(type: .system)
+        backButton.setImage(UIImage(systemName: "chevron.backward"), for: .normal)
+        backButton.setTitle("Back", for: .normal)
+        backButton.sizeToFit()
+        backButton.addTarget(self, action: #selector(backToStartViewController), for: .touchUpInside)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
+    }
+    
+    private func filterRulsAlert() {
+        let alert = UIAlertController(title: "Not valide filter word", message: "You word mast have at least 2 characters and no spaces.", preferredStyle: .alert)
+        let actionOK = UIAlertAction(title: "OK", style: .default) { _ in
+            self.addWordToFilterAlert()
+        }
+        alert.addAction(actionOK)
+        present(alert, animated: true)
+    }
 }
 
 //MARK: - Table Delegate, DataSource:
