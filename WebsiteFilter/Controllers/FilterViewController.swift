@@ -35,7 +35,7 @@ class FilterViewController: UIViewController {
     
 //MARK: - @objc func:
     @objc private func addWordToFilterAlert() {
-        let alert = UIAlertController(title: "Exception", message: "Add a word to prevent opening links", preferredStyle: .alert)
+        let alert = UIAlertController(title: ElementsTitles.AlertTitleAndMessage.addWordToFilterTitle, message: ElementsTitles.AlertTitleAndMessage.addWordToFilterMessage, preferredStyle: .alert)
        
         let actionOK = UIAlertAction(title: "OK", style: .default){ _ in
             guard let word = alert.textFields?.first?.text,
@@ -65,7 +65,7 @@ class FilterViewController: UIViewController {
 //MARK: - Private func:
     private func setUpView() {
         view.backgroundColor = .white
-        title = "Filter words"
+        title = ElementsTitles.TitleViewControllers.filterVC
     }
     
     private func setFilterTable() {
@@ -83,7 +83,7 @@ class FilterViewController: UIViewController {
     
     private func setupLeftBarButton() {
         let backButton = UIButton(type: .system)
-        backButton.setImage(UIImage(systemName: "chevron.backward"), for: .normal)
+        backButton.setImage(ElementsTitles.ImageForButtons.backBarImage, for: .normal)
         backButton.setTitle("Back", for: .normal)
         backButton.sizeToFit()
         backButton.addTarget(self, action: #selector(backToStartViewController), for: .touchUpInside)
@@ -91,7 +91,7 @@ class FilterViewController: UIViewController {
     }
     
     private func filterRuleAlert() {
-        let alert = UIAlertController(title: "Not valide filter word", message: "You word mast have at least 2 characters and no spaces.", preferredStyle: .alert)
+        let alert = UIAlertController(title: ElementsTitles.AlertTitleAndMessage.filterRuleAlertTitle, message: ElementsTitles.AlertTitleAndMessage.filterRuleAlertMessage, preferredStyle: .alert)
         let actionOK = UIAlertAction(title: "OK", style: .default) { _ in
             self.addWordToFilterAlert()
         }

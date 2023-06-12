@@ -10,8 +10,8 @@ import WebKit
 
 class WebBrowserVC: UIViewController {
     
-    var url = ""
-    var exceptionArray: [String] = ["xxx"]
+    private var url = ""
+    private var exceptionArray: [String] = ["xxx"]
     
     private let webView = WKWebView()
     private let validManager = ValidateManager()
@@ -32,6 +32,11 @@ class WebBrowserVC: UIViewController {
     
     //MARK: - @objc func:
     
+    @objc private func inputUrl() {
+        guard let textTF = inputTextField.text else {return}
+        url = textTF
+    }
+    
     @objc private func getValideLinkTextField() {
         guard validManager.isValideLinkMask(text: url) else {
             openURL(urlAdress: "https://www.google.com/search?q=\(url)")
@@ -50,6 +55,21 @@ class WebBrowserVC: UIViewController {
         }
     }
     
+    @objc private func openFilterListVC() {
+        let filterVC = FilterViewController()
+        let navController = UINavigationController(rootViewController: filterVC)
+        filterVC.filterWords = exceptionArray
+        filterVC.completion = { [weak self] wordsException in
+            self?.exceptionArray = wordsException
+        }
+        if let presentationController = navController.presentationController as? UISheetPresentationController {
+            presentationController.detents = [.medium(), .large()]
+        }
+        navigationController?.present(navController, animated: true)
+    }
+    
+    //MARK: - WebViewActions:
+    
     @objc private func backURL() {
         guard webView.canGoBack else {return}
         webView.goBack()
@@ -58,19 +78,6 @@ class WebBrowserVC: UIViewController {
     @objc private func forwardURL() {
         guard webView.canGoForward else {return}
         webView.goForward()
-    }
-    
-    @objc private func openFilterListVC() {
-        let filterVC = FilterViewController()
-        let navController = UINavigationController(rootViewController: filterVC)
-        filterVC.filterWords = exceptionArray
-        filterVC.completion = { [unowned self] wordsException in
-            self.exceptionArray = wordsException
-        }
-        if let presentationController = navController.presentationController as? UISheetPresentationController {
-            presentationController.detents = [.medium(), .large()]
-        }
-        navigationController?.present(navController, animated: true)
     }
     
     @objc private func refreshURL() {
@@ -82,12 +89,8 @@ class WebBrowserVC: UIViewController {
         inputTextField.text = ""
     }
     
-    @objc private func inputUrl() {
-        guard let textTF = inputTextField.text else {return}
-        url = textTF
-    }
-    
     //MARK: - private Functions
+    
     private func setTargetButton() {
         inputTextField.addTarget(self, action: #selector(inputUrl), for: .editingChanged)
         backButton.addTarget(self, action: #selector(backURL), for: .touchUpInside)
@@ -99,7 +102,7 @@ class WebBrowserVC: UIViewController {
     
     private func alertIsNotAllowedURL() {
         DispatchQueue.main.async {
-            let alert = UIAlertController(title: "Attention\nYou input Not Allowed URL.", message: "Please change your URL", preferredStyle: .alert)
+            let alert = UIAlertController(title: ElementsTitles.AlertTitleAndMessage.notAllowedURTitle, message: ElementsTitles.AlertTitleAndMessage.notAllowedURMessage, preferredStyle: .alert)
             let actionOk = UIAlertAction(title: "OK", style: .cancel)
             alert.addAction(actionOk)
             self.present(alert, animated: true)
@@ -126,7 +129,7 @@ extension WebBrowserVC: WKNavigationDelegate {
         guard let url = navigationAction.request.url?.absoluteString else {return}
         if exceptionArray.contains(where: {url.contains($0)}) {
             self.alertIsNotAllowedURL()
-            openURL(urlAdress: "https://www.google.com")
+            openURL(urlAdress: ElementsTitles.ActionPolicy.defaultURL)
             decisionHandler(.cancel)
         } else {
             decisionHandler(.allow)
@@ -158,7 +161,7 @@ extension WebBrowserVC {
     
     private func setUpView() {
         view.backgroundColor = .white
-        title = "Website Filter"
+        title = ElementsTitles.TitleViewControllers.webBrowserVC
     }
     
     private func setWebView() {
@@ -178,9 +181,9 @@ extension WebBrowserVC {
         inputTextField.borderColorRadius(borderWidth: 1, cornerRadius: 17, borderColor: .lightGray)
     }
     
-    private func setLeftImageOnTextField(){
+    private func setLeftImageOnTextField() {
         let leftIViewGoogle = UIImageView(frame: CGRect(x: 10, y: 8, width: 20, height: 20))
-        leftIViewGoogle.image = UIImage(named: "icon-google")
+        leftIViewGoogle.image = ElementsTitles.ImageForButtons.googleImage
         leftIViewGoogle.contentMode = .scaleAspectFit
         let leftView = UIView(frame: CGRect(x: 0, y: 0, width: 34, height: 34))
         leftView.addSubview(leftIViewGoogle)
@@ -190,7 +193,7 @@ extension WebBrowserVC {
     
     private func setRightButtonOnTextField() {
         let rightButton = UIButton()
-        rightButton.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
+        rightButton.setImage(ElementsTitles.ImageForButtons.magnifyingglassImage, for: .normal)
         rightButton.frame = CGRect(x: 0, y: 8, width: 20, height: 20)
         rightButton.addTarget(self, action: #selector(getValideLinkTextField), for: .touchUpInside)
         let rightView = UIView(frame: CGRect(x: 0, y: 0, width: 30, height: 34))
@@ -208,23 +211,23 @@ extension WebBrowserVC {
         view.addSubview(stackView)
     }
     
-    private func setStackButtons(){
+    private func setStackButtons() {
         let arrayButtons = [backButton, forwardButton, refreshButton, filterButton]
         arrayButtons.forEach { button in
             button.setTitleColor(UIColor.systemBlue, for: .normal)
             button.titleLabel?.font = .boldSystemFont(ofSize: 18)
             button.borderColorRadius(borderWidth: 1, cornerRadius: 17, borderColor: .systemBlue)
         }
-        backButton.setImage(UIImage(named: "chevron.backward"), for: .normal)
-        forwardButton.setImage(UIImage(named: "chevron.right"), for: .normal)
-        refreshButton.setImage(UIImage(named: "arrow.clockwise"), for: .normal)
-        filterButton.setImage(UIImage(named: "line.3.horizontal.decrease.circle"), for: .normal)
+        backButton.setImage(ElementsTitles.ImageForButtons.backImage, for: .normal)
+        forwardButton.setImage(ElementsTitles.ImageForButtons.forwardImage, for: .normal)
+        refreshButton.setImage(ElementsTitles.ImageForButtons.refreshImage, for: .normal)
+        filterButton.setImage(ElementsTitles.ImageForButtons.filterImage, for: .normal)
     }
     
-    private func setClearStopButton(){
+    private func setClearStopButton() {
         view.addSubview(сlearButton)
         сlearButton.translatesAutoresizingMaskIntoConstraints = false
-        сlearButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        сlearButton.setImage(ElementsTitles.ImageForButtons.сlearImage, for: .normal)
         сlearButton.tintColor = .red
     }
     
