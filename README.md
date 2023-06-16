@@ -26,9 +26,13 @@
 
 ## Скриншоты программы:
 
-<img src="https://git.foxminded.ua/foxstudent103423/websitefilter/-/blob/main/Screenshot/Screenshot%202023-06-14%20at%2020.27.09.png" alt="drawing" width="100"/>
-<img src="https://git.foxminded.ua/foxstudent103423/websitefilter/-/blob/main/Screenshot/Screenshot%202023-06-14%20at%2020.28.28.png" alt="drawing" width="200"/>
-<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.30.04.png" alt="drawing" width="100"/>
+<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.28.28.png" alt="drawing" width="250"/>
+<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.30.04.png" alt="drawing" width="250"/>
+<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.31.44.png" alt="drawing" width="250"/>
+
+<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.33.20.png" alt="drawing" width="250"/>
+<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.33.35.png" alt="drawing" width="250"/>
+<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.34.19.png" alt="drawing" width="250"/>
 
 ## Contributing
 Если вы нашли баг или замечание в коде или при работе программы, пожалуйста напишите мне на [ почту](sud85@outlook.com).
