@@ -35,8 +35,8 @@
 <img src="./Screenshot/Screenshot%202023-06-14%20at%2020.34.19.png" alt="drawing" width="250"/>
 
 ## Contributing
-Если вы нашли баг или замечание в коде или при работе программы, пожалуйста напишите мне на [ почту](mailto:sud85@outlook.com).
-mailto:sud85@outlook.com
+Если вы нашли баг или замечание в коде или при работе программы, пожалуйста напишите мне на почту:
+<a href="mailto:sud85@outlook.com">sud85@outlook.com</a></p>
 
 
 ### Зачем вы разработали этот проект?
