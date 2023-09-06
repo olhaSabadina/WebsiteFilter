@@ -1,14 +1,14 @@
 # Website Filter
-Простенькая программка для просмотра веб страниц с возможностью блокировки открытия или поиска ссылок, в которых будут присутствовать слова из фильтра.
-Пользователь имеет возможность добавлять и удалять слова - ограничения.
+A program for viewing web pages with the ability to block the opening or search for links that will contain words from the filter.
+The user has the ability to add and remove words - restrictions.
 
-## Содержание
-- [Технологии](#технологии)
-- [Дополнительно](#дополнительно)
-- [Скриншоты](#скриншоты-программы)
+## Content
+- [Technologies](#technologies)
+- [Additionally](#additionally)
+- [Screenshots](#screenshots)
 - [Contributing](#contributing)
 
-## Технологии
+## Technologies
 - Swift
 - UIKit
 - Code-only layout
@@ -17,29 +17,25 @@
 - MVC
 - Without storyboard
 
-## Дополнительно
-В качестве дополнения добавлено правило для фильтра: минимум два символа и без пробелов.
-Испльзовалось: Regular expression
+## Additionally
+As an addition, a filter rule has been added: at least two characters and no spaces.
+Used: Regular expression
 ```sh
 "^([a-zA-Zа-яА-Я]{1,}[^ ])$"
 ```
 
-## Скриншоты программы:
+## Screenshots
 
-<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.28.28.png" alt="drawing" width="250"/>
-<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.30.04.png" alt="drawing" width="250"/>
-<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.31.44.png" alt="drawing" width="250"/>
+<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.28.28.png" alt="drawing" width="200"/> <img src="./Screenshot/Screenshot%202023-06-14%20at%2020.30.04.png" alt="drawing" width="200"/> <img src="./Screenshot/Screenshot%202023-06-14%20at%2020.31.44.png" alt="drawing" width="200"/>
 
-<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.33.20.png" alt="drawing" width="250"/>
-<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.33.35.png" alt="drawing" width="250"/>
-<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.34.19.png" alt="drawing" width="250"/>
+<img src="./Screenshot/Screenshot%202023-06-14%20at%2020.33.20.png" alt="drawing" width="200"/> <img src="./Screenshot/Screenshot%202023-06-14%20at%2020.33.35.png" alt="drawing" width="200"/> <img src="./Screenshot/Screenshot%202023-06-14%20at%2020.34.19.png" alt="drawing" width="200"/>
 
 ## Contributing
-Если вы нашли баг или замечание в коде или при работе программы, пожалуйста напишите мне на почту:
-<a href="mailto:sud85@outlook.com">sud85@outlook.com</a></p>
+If you find a bug or remark in the code or when the program is running, please email me:
+<a href="mailto:olga.sabadina@icloud.com">olga.sabadina@icloud.com</a></p>
 
 
-### Зачем вы разработали этот проект?
+### Why did I write this project?
 ___
-В учебных целях. При прохождении курса [Foxminded]((https://lms.foxminded.ua/my/)) по Swift
+This app was developed with the help of the knowledge gained during the mentoring course on [Foxminded](https://foxminded.ua)  Swift
 
